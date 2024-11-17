@@ -1,120 +1,162 @@
-import React, { useState } from 'react';
-import { AlertCircle, Mail, Lock, User, Github, Facebook, Twitter } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area
+} from 'recharts';
 
-const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [website, setWebsite] = useState('');
-  const [error, setError] = useState('');
+const Dashboard = () => {
+  // Sample data - in real application this would come from props
+  const timelineData = [
+    { year: "1800-1825", count: 245 },
+    { year: "1826-1850", count: 567 },
+    { year: "1851-1875", count: 890 },
+    { year: "1876-1900", count: 1234 },
+    { year: "1901-1925", count: 2100 },
+    { year: "1926-1950", count: 1789 }
+  ];
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!email || !password || !website) {
-      setError('Please fill in all fields');
-    } else {
-      setError('');
-      console.log('Login attempted:', { email, password, website });
-      // Here you would typically handle the login logic
-      alert(`Login attempted: ${email}, ${password}, ${website}`);
-    }
-  };
+  const documentTypes = [
+    { name: "Letters", value: 3245 },
+    { name: "Diaries", value: 2156 },
+    { name: "Manuscripts", value: 1789 },
+    { name: "Official Records", value: 1456 },
+    { name: "Newspapers", value: 987 }
+  ];
 
-  const handleSocialLogin = (platform) => {
-    console.log(`${platform} login attempted`);
-    // Here you would typically handle the social login logic
-    alert(`${platform} login attempted`);
-  };
+  const languageData = [
+    { language: "English", percentage: 45 },
+    { language: "French", percentage: 20 },
+    { language: "German", percentage: 15 },
+    { language: "Italian", percentage: 12 },
+    { language: "Latin", percentage: 8 }
+  ];
+
+  const preservationData = [
+    { month: "Jan", digitized: 145, catalogued: 120 },
+    { month: "Feb", digitized: 178, catalogued: 156 },
+    { month: "Mar", digitized: 235, catalogued: 190 },
+    { month: "Apr", digitized: 289, catalogued: 220 },
+    { month: "May", digitized: 356, catalogued: 280 },
+    { month: "Jun", digitized: 412, catalogued: 350 }
+  ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Demo Component</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                icon={<Mail className="h-4 w-4 text-gray-500" />}
-              />
+    <div className="p-4 w-full space-y-4">
+      <h1 className="text-2xl font-bold mb-4">Cultural Heritage Text Corpus Analytics</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Temporal Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Temporal Distribution of Texts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={timelineData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="year" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area 
+                    type="monotone" 
+                    dataKey="count" 
+                    fill="#8884d8" 
+                    stroke="#8884d8"
+                    fillOpacity={0.3}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                icon={<Lock className="h-4 w-4 text-gray-500" />}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="website">Target Website</Label>
-              <Select onValueChange={setWebsite}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a website" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="website1">Website 1</SelectItem>
-                  <SelectItem value="website2">Website 2</SelectItem>
-                  <SelectItem value="website3">Website 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Button type="submit" className="w-full">Log In</Button>
-          </form>
+          </CardContent>
+        </Card>
 
-          {error && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="relative mt-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+        {/* Document Types */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Document Type Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={documentTypes}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {documentTypes.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          </CardContent>
+        </Card>
+
+        {/* Language Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Language Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={languageData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="language" />
+                  <YAxis unit="%" />
+                  <Tooltip />
+                  <Bar dataKey="percentage" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="flex space-x-4 mt-6">
-            <Button variant="outline" className="w-full" onClick={() => handleSocialLogin('Github')}>
-              <Github className="mr-2 h-4 w-4" /> Github
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => handleSocialLogin('Facebook')}>
-              <Facebook className="mr-2 h-4 w-4" /> Facebook
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => handleSocialLogin('Twitter')}>
-              <Twitter className="mr-2 h-4 w-4" /> Twitter
-            </Button>
-          </div>
-
-          <div className="text-center text-sm mt-6">
-            Don't have an account?{' '}
-            <Button variant="link" className="p-0">
-              Sign up
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Preservation Progress */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Digitization & Cataloguing Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={preservationData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line 
+                    type="monotone" 
+                    dataKey="digitized" 
+                    stroke="#8884d8" 
+                    name="Digitized"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="catalogued" 
+                    stroke="#82ca9d" 
+                    name="Catalogued"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default Dashboard;
